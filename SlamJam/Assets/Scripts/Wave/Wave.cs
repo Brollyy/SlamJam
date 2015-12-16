@@ -122,7 +122,7 @@ public class Wave : MonoBehaviour
 			for (int j = 0; j < 4; ++j) {
 				samplesSum += this.volume[j]*samples [j, i];
 			}
-			pointPos = Vector2.SmoothDamp(pointsTransform[i], new Vector2(pointsTransform[i].x, Mathf.Clamp(samplesSum*(amplitude*(Mathf.Exp(0.1F*i)-0.05F)),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
+			pointPos = Vector2.SmoothDamp(pointsTransform[i], new Vector2(pointsTransform[i].x, Mathf.Clamp(samplesSum*(amplitude*(Mathf.Exp(0.12F*i-1.2F))),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
 
 			//Set the point to the new Y position
 			pointsTransform[i] = pointPos;
