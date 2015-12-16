@@ -4,9 +4,12 @@ using System.Collections;
 public class Wave : MonoBehaviour
 {
 	//An AudioSource object so the music can be played
-	private AudioSource aSource;
+	private AudioSource[] aSources = new AudioSource[4];
+	public AudioClip[] tracks = new AudioClip[4];
+	public bool[] enabledTracks = new bool[4];
 	//A float array that stores the audio samples
-	public float[] samples = new float[64];
+	public float[,] samples = new float[4, 64];
+	private float[] tempSamples = new float[64];
 	//A renderer that will draw a line at the screen
 	private LineRenderer lRenderer;
 	//The transform attached to this game object
@@ -27,13 +30,9 @@ public class Wave : MonoBehaviour
 	public float amplitude = 50.0F;
 	public float volume = 1.0F;
 
-	public int samplesPerPoint = 1;
-
 	void Awake ()
 	{
 		//Get and store a reference to the following attached components:
-		//AudioSource
-		this.aSource = GetComponent<AudioSource>();
 		//LineRenderer
 		this.lRenderer = GetComponent<LineRenderer>();
 		//Transform
@@ -43,7 +42,7 @@ public class Wave : MonoBehaviour
 
 	void Start()
 	{
-		int length = samples.Length / samplesPerPoint + (samples.Length % samplesPerPoint > 0 ? 1 : 0);
+		int length = samples.GetLength(1);
 		//The line should have the same number of points as the number of samples
 		lRenderer.SetVertexCount(length);
 		//The pointsTransform array should be initialized with the same length as the samples array
@@ -56,22 +55,34 @@ public class Wave : MonoBehaviour
 		meshGenerators = new ColliderToMesh[length - 1];
 		smoothingVelocities = new Vector2[length];
 		//Center the audio visualization line at the X axis, according to the samples array length
-		goTransform.position = new Vector2(-samples.Length/2,goTransform.position.y);
+		goTransform.position = new Vector2(-length/2,goTransform.position.y);
+
+		for (int i = 0; i < 4; ++i) {
+			if (tracks [i]) {
+				enabledTracks [i] = true;
+				aSources [i] = gameObject.AddComponent<AudioSource> ();
+				aSources [i].clip = tracks [i];
+				aSources [i].loop = true;
+				aSources [i].Play ();
+			}
+			else
+				enabledTracks[i] = false;
+		}
 
 		//For each sample
 		for(int i=0; i<length;i++)
 		{
 			//Get the recently instantiated point Transform component
 			smoothingVelocities[i] = Vector2.zero;
-			pointsTransform[i] = new Vector2(goTransform.position.x + i*samplesPerPoint, goTransform.position.y);
+			pointsTransform[i] = new Vector2(goTransform.position.x + i, goTransform.position.y);
 			relativePoints [i] = pointsTransform [i] - goTransform2D;
 		}
 		for (int i = 0; i < length-1; ++i) {
 			areas [i] = new GameObject ("Wave area " + i);
 			areas [i].transform.parent = goTransform;
 			areas[i].AddComponent<PolygonCollider2D> ();
-			areaVertices [0].Set (goTransform2D.x + i*samplesPerPoint, 0);
-			areaVertices [1].Set (goTransform2D.x + (i + 1)*samplesPerPoint, 0);
+			areaVertices [0].Set (goTransform2D.x + i, 0);
+			areaVertices [1].Set (goTransform2D.x + (i + 1), 0);
 			areaVertices [2] = pointsTransform [i];
 			areaVertices [3] = pointsTransform [i + 1];
 			areas[i].GetComponent<PolygonCollider2D> ().points = areaVertices;
@@ -85,18 +96,29 @@ public class Wave : MonoBehaviour
 
 	void Update ()
 	{
-		int length = samples.Length / samplesPerPoint + (samples.Length % samplesPerPoint > 0 ? 1 : 0);
+		int length = samples.GetLength(1);
 		//Obtain the samples from the frequency bands of the attached AudioSource
-		aSource.GetSpectrumData(this.samples,0,FFTWindow.BlackmanHarris);
-
+		for (int i = 0; i < 4; ++i) {
+			if (enabledTracks [i]) {
+				aSources[i].GetSpectrumData (tempSamples, 0, FFTWindow.BlackmanHarris);
+				for (int j = 0; j < length; ++j) {
+					samples [i, j] = tempSamples [j];
+				}
+			}
+			else {
+				for (int j = 0; j < length; ++j) {
+					samples [i, j] = 0.0F;
+				}
+			}
+		}
 		//For each sample
 		for(int i=0; i<length;i++)
 		{
 			/*Set the pointPos Vector3 to the same value as the position of the corresponding
 			 * point. However, set it's Y element according to the current sample.*/
 			float samplesSum = 0;
-			for (int j = 0; j < samplesPerPoint && j + i * samplesPerPoint < samples.Length; ++j) {
-				samplesSum += samples [i * samplesPerPoint + j];
+			for (int j = 0; j < 4; ++j) {
+				samplesSum += samples [j, i];
 			}
 			pointPos = Vector2.SmoothDamp(pointsTransform[i], new Vector2(pointsTransform[i].x, volume*Mathf.Clamp(samplesSum*(amplitude+amplitude*i*i/50),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
 
@@ -110,8 +132,8 @@ public class Wave : MonoBehaviour
 			lRenderer.SetPosition(i, new Vector3(pointPos.x, pointPos.y, 0));
 		}
 		for (int i = 0; i < length-1; ++i) {
-			areaVertices [0].Set (goTransform.position.x + i*samplesPerPoint, 0);
-			areaVertices [1].Set (goTransform.position.x + (i + 1)*samplesPerPoint, 0);
+			areaVertices [0].Set (goTransform.position.x + i, 0);
+			areaVertices [1].Set (goTransform.position.x + (i + 1), 0);
 			areaVertices [2] = pointsTransform [i];
 			areaVertices [3] = pointsTransform [i + 1];
 			areas [i].GetComponent<PolygonCollider2D> ().points = areaVertices;
