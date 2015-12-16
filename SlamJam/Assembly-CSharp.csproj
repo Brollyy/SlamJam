@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Ball\BounceOff.cs" />
+     <Compile Include="Assets\Scripts\Controls\KeyboardControls.cs" />
      <Compile Include="Assets\Scripts\Utility\ColliderToMesh.cs" />
      <Compile Include="Assets\Scripts\Wave\SmoothingSpeedStorage.cs" />
      <Compile Include="Assets\Scripts\Wave\Wave.cs" />

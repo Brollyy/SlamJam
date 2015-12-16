@@ -10,6 +10,8 @@ public class Wave : MonoBehaviour
 	//A float array that stores the audio samples
 	public float[,] samples = new float[4, 64];
 	private float[] tempSamples = new float[64];
+	public float numberOfSamples = 48;
+	private float a;
 	//A renderer that will draw a line at the screen
 	private LineRenderer lRenderer;
 	//The transform attached to this game object
@@ -43,6 +45,7 @@ public class Wave : MonoBehaviour
 	void Start()
 	{
 		int length = samples.GetLength(1);
+		a = (64.0F - numberOfSamples) / ((numberOfSamples + 1.0F) * numberOfSamples);
 		//The line should have the same number of points as the number of samples
 		lRenderer.SetVertexCount(length);
 		//The pointsTransform array should be initialized with the same length as the samples array
@@ -54,7 +57,7 @@ public class Wave : MonoBehaviour
 		areaVertices [1] = new Vector2 ();
 		meshGenerators = new ColliderToMesh[length - 1];
 		smoothingVelocities = new Vector2[length];
-		volume = new float[4];
+		volume = new float[4] {0.0F, 0.0F, 0.0F, 0.0F};
 		//Center the audio visualization line at the X axis, according to the samples array length
 		goTransform.position = new Vector2(-length/2,goTransform.position.y);
 
@@ -63,7 +66,7 @@ public class Wave : MonoBehaviour
 				aSources [i] = gameObject.AddComponent<AudioSource> ();
 				aSources [i].clip = tracks [i];
 				aSources [i].loop = true;
-				volume [i] = 1.0F;
+				aSources [i].volume = volume[i];
 				aSources [i].Play ();
 			}
 		}
@@ -73,15 +76,15 @@ public class Wave : MonoBehaviour
 		{
 			//Get the recently instantiated point Transform component
 			smoothingVelocities[i] = Vector2.zero;
-			pointsTransform[i] = new Vector2(goTransform.position.x + i, goTransform.position.y);
+			pointsTransform[i] = new Vector2(goTransform.position.x + i + a*i*(i+1), goTransform.position.y);
 			relativePoints [i] = pointsTransform [i] - goTransform2D;
 		}
 		for (int i = 0; i < length-1; ++i) {
 			areas [i] = new GameObject ("Wave area " + i);
 			areas [i].transform.parent = goTransform;
 			areas[i].AddComponent<PolygonCollider2D> ();
-			areaVertices [0].Set (goTransform2D.x + i, 0);
-			areaVertices [1].Set (goTransform2D.x + (i + 1), 0);
+			areaVertices [0].Set (goTransform2D.x + i + a*i*(i+1), 0);
+			areaVertices [1].Set (goTransform2D.x + (i + 1) + a*(i+1)*(i+2), 0);
 			areaVertices [2] = pointsTransform [i];
 			areaVertices [3] = pointsTransform [i + 1];
 			areas[i].GetComponent<PolygonCollider2D> ().points = areaVertices;
@@ -111,7 +114,7 @@ public class Wave : MonoBehaviour
 			}
 		}
 		//For each sample
-		for(int i=0; i<length;i++)
+		for(int i=0; i<numberOfSamples;i++)
 		{
 			/*Set the pointPos Vector3 to the same value as the position of the corresponding
 			 * point. However, set it's Y element according to the current sample.*/
@@ -119,7 +122,7 @@ public class Wave : MonoBehaviour
 			for (int j = 0; j < 4; ++j) {
 				samplesSum += this.volume[j]*samples [j, i];
 			}
-			pointPos = Vector2.SmoothDamp(pointsTransform[i], new Vector2(pointsTransform[i].x, Mathf.Clamp(samplesSum*(amplitude+amplitude*i*i/50),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
+			pointPos = Vector2.SmoothDamp(pointsTransform[i], new Vector2(pointsTransform[i].x, Mathf.Clamp(samplesSum*(amplitude*(Mathf.Exp(0.1F*i)-0.05F)),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
 
 			//Set the point to the new Y position
 			pointsTransform[i] = pointPos;
@@ -131,8 +134,8 @@ public class Wave : MonoBehaviour
 			lRenderer.SetPosition(i, new Vector3(pointPos.x, pointPos.y, 0));
 		}
 		for (int i = 0; i < length-1; ++i) {
-			areaVertices [0].Set (goTransform.position.x + i, 0);
-			areaVertices [1].Set (goTransform.position.x + (i + 1), 0);
+			areaVertices [0].Set (goTransform.position.x + i + a*i*(i+1), 0);
+			areaVertices [1].Set (goTransform.position.x + (i + 1) + a*(i+1)*(i+2), 0);
 			areaVertices [2] = pointsTransform [i];
 			areaVertices [3] = pointsTransform [i + 1];
 			areas [i].GetComponent<PolygonCollider2D> ().points = areaVertices;
