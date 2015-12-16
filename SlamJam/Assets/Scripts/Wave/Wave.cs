@@ -28,7 +28,7 @@ public class Wave : MonoBehaviour
 	private Vector2[] smoothingVelocities;
 	public float smoothingTime = 0.05F;
 	public float amplitude = 50.0F;
-	public float[] volume = {1.0F, 1.0F, 1.0F, 1.0F};
+	private float[] volume;
 
 	void Awake ()
 	{
@@ -54,6 +54,7 @@ public class Wave : MonoBehaviour
 		areaVertices [1] = new Vector2 ();
 		meshGenerators = new ColliderToMesh[length - 1];
 		smoothingVelocities = new Vector2[length];
+		volume = new float[4];
 		//Center the audio visualization line at the X axis, according to the samples array length
 		goTransform.position = new Vector2(-length/2,goTransform.position.y);
 
@@ -62,6 +63,7 @@ public class Wave : MonoBehaviour
 				aSources [i] = gameObject.AddComponent<AudioSource> ();
 				aSources [i].clip = tracks [i];
 				aSources [i].loop = true;
+				volume [i] = 1.0F;
 				aSources [i].Play ();
 			}
 		}
@@ -115,7 +117,7 @@ public class Wave : MonoBehaviour
 			 * point. However, set it's Y element according to the current sample.*/
 			float samplesSum = 0;
 			for (int j = 0; j < 4; ++j) {
-				samplesSum += volume[j]*samples [j, i];
+				samplesSum += this.volume[j]*samples [j, i];
 			}
 			pointPos = Vector2.SmoothDamp(pointsTransform[i], new Vector2(pointsTransform[i].x, Mathf.Clamp(samplesSum*(amplitude+amplitude*i*i/50),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
 
@@ -148,6 +150,16 @@ public class Wave : MonoBehaviour
 					aSources [track].volume = volume;
 				}
 			}
+		}
+	}
+
+	public void ToggleTrack(int track) {
+		if (track >= 0 && track < 4) {
+			enabledTracks [track] = !enabledTracks [track];
+			if (enabledTracks [track])
+				aSources [track].Play ();
+			else
+				aSources [track].Stop ();
 		}
 	}
 }
