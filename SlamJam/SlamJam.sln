@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{2A7BEFA9-73FF-B43B-FF75-F03BE5A20AD4}") = "SlamJam", "Assembly-CSharp.csproj", "{D8DA9EA4-E16E-F8FA-84F6-468A3E9F2CBF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D8DA9EA4-E16E-F8FA-84F6-468A3E9F2CBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8DA9EA4-E16E-F8FA-84F6-468A3E9F2CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8DA9EA4-E16E-F8FA-84F6-468A3E9F2CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8DA9EA4-E16E-F8FA-84F6-468A3E9F2CBF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
