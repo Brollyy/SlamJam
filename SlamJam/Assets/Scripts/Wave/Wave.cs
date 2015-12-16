@@ -28,7 +28,7 @@ public class Wave : MonoBehaviour
 	private Vector2[] smoothingVelocities;
 	public float smoothingTime = 0.05F;
 	public float amplitude = 50.0F;
-	public float volume = 1.0F;
+	public float[] volume = {1.0F, 1.0F, 1.0F, 1.0F};
 
 	void Awake ()
 	{
@@ -58,15 +58,12 @@ public class Wave : MonoBehaviour
 		goTransform.position = new Vector2(-length/2,goTransform.position.y);
 
 		for (int i = 0; i < 4; ++i) {
-			if (tracks [i]) {
-				enabledTracks [i] = true;
+			if (enabledTracks [i]) {
 				aSources [i] = gameObject.AddComponent<AudioSource> ();
 				aSources [i].clip = tracks [i];
 				aSources [i].loop = true;
 				aSources [i].Play ();
 			}
-			else
-				enabledTracks[i] = false;
 		}
 
 		//For each sample
@@ -118,9 +115,9 @@ public class Wave : MonoBehaviour
 			 * point. However, set it's Y element according to the current sample.*/
 			float samplesSum = 0;
 			for (int j = 0; j < 4; ++j) {
-				samplesSum += samples [j, i];
+				samplesSum += volume[j]*samples [j, i];
 			}
-			pointPos = Vector2.SmoothDamp(pointsTransform[i], new Vector2(pointsTransform[i].x, volume*Mathf.Clamp(samplesSum*(amplitude+amplitude*i*i/50),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
+			pointPos = Vector2.SmoothDamp(pointsTransform[i], new Vector2(pointsTransform[i].x, Mathf.Clamp(samplesSum*(amplitude+amplitude*i*i/50),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
 
 			//Set the point to the new Y position
 			pointsTransform[i] = pointPos;
@@ -140,6 +137,17 @@ public class Wave : MonoBehaviour
 			meshGenerators [i].GetMesh ();
 			areas [i].GetComponent<SmoothingSpeedStorage> ().smoothingSpeed1 = smoothingVelocities [i];
 			areas [i].GetComponent<SmoothingSpeedStorage> ().smoothingSpeed2 = smoothingVelocities [i + 1];
+		}
+	}
+
+	public void setVolume(int track, float volume) {
+		if (track >= 0 && track < 4) {
+			if (volume >= 0.0F && volume <= 1.0F) {
+				this.volume [track] = volume;
+				if (enabledTracks [track]) {
+					aSources [track].volume = volume;
+				}
+			}
 		}
 	}
 }
