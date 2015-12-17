@@ -39,12 +39,12 @@ public class Wave : MonoBehaviour
 		this.lRenderer = GetComponent<LineRenderer>();
 		//Transform
 		this.goTransform = GetComponent<Transform>();
-		goTransform2D = new Vector2(goTransform.position.x, goTransform.position.y);
 	}
 
 	void Start()
 	{
 		int length = samples.GetLength(1);
+		goTransform2D = new Vector2(goTransform.position.x, goTransform.position.y);
 		a = (64.0F - numberOfSamples) / ((numberOfSamples + 1.0F) * numberOfSamples);
 		//The line should have the same number of points as the number of samples
 		lRenderer.SetVertexCount(length);
@@ -82,8 +82,8 @@ public class Wave : MonoBehaviour
 			areas [i] = new GameObject ("Wave area " + i);
 			areas [i].transform.parent = goTransform;
 			areas[i].AddComponent<PolygonCollider2D> ();
-			areaVertices [0].Set (pointsTransform[i].x, 0);
-			areaVertices [1].Set (pointsTransform[i+1].x, 0);
+			areaVertices [0].Set (pointsTransform[i].x, goTransform2D.y);
+			areaVertices [1].Set (pointsTransform[i+1].x, goTransform2D.y);
 			areaVertices [2] = pointsTransform [i];
 			areaVertices [3] = pointsTransform [i + 1];
 			areas[i].GetComponent<PolygonCollider2D> ().points = areaVertices;
@@ -121,20 +121,20 @@ public class Wave : MonoBehaviour
 			for (int j = 0; j < 4; ++j) {
 				samplesSum += this.volume[j]*samples [j, i];
 			}
-			pointPos = Vector2.SmoothDamp(pointsTransform[i], new Vector2(pointsTransform[i].x, goTransform.lossyScale.y*Mathf.Clamp(samplesSum*(amplitude*(Mathf.Exp(0.12F*i-1.2F))),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
+			pointPos = Vector2.SmoothDamp(relativePoints[i], new Vector2(relativePoints[i].x, goTransform.lossyScale.y*Mathf.Clamp(samplesSum*(amplitude*(Mathf.Exp(0.12F*i-1.2F))),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
 
 			//Set the point to the new Y position
-			pointsTransform[i] = pointPos;
-			relativePoints[i] = pointsTransform [i] - goTransform2D;
+			relativePoints[i] = pointPos;
+			pointsTransform[i] = relativePoints [i] + goTransform2D;
 
 			/*Set the position of each vertex of the line based on the point position.
 			 * Since this method only takes absolute World space positions, it has
 			 * been subtracted by the current game object position.*/
-			lRenderer.SetPosition(i, new Vector3(pointPos.x, pointPos.y, 0));
+			lRenderer.SetPosition(i, new Vector3(pointsTransform[i].x, pointsTransform[i].y, 0));
 		}
 		for (int i = 0; i < length-1; ++i) {
-			areaVertices [0].Set (goTransform2D.x + (i + a*i*(i+1))*goTransform.lossyScale.x, 0);
-			areaVertices [1].Set (goTransform2D.x + ((i + 1) + a*(i+1)*(i+2))*goTransform.lossyScale.x, 0);
+			areaVertices [0].Set (pointsTransform[i].x, goTransform2D.y);
+			areaVertices [1].Set (pointsTransform[i+1].x, goTransform2D.y);
 			areaVertices [2] = pointsTransform [i];
 			areaVertices [3] = pointsTransform [i + 1];
 			areas [i].GetComponent<PolygonCollider2D> ().points = areaVertices;
