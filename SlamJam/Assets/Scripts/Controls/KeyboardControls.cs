@@ -33,9 +33,9 @@ public class KeyboardControls : MonoBehaviour {
 				wave.setVolume (i, sliders [i]);
 				UIsliders [i].GetComponent<Slider>().normalizedValue = UIsliders[i].GetComponent<Slider>().normalizedValue+rateOfChange;
 			}	
-			if (Input.GetKey (downCodes[i]) && sliders[i] > 0.0F) {
+			if (Input.GetKey (downCodes[i]) && sliders[i] >= 0.0F) {
 				sliders [i] -= rateOfChange;
-				wave.setVolume (i, sliders [i]);
+				wave.setVolume (i, (sliders [i] >= 0.0F ? sliders[i] : 0.0F));
 				UIsliders [i].GetComponent<Slider>().normalizedValue = UIsliders[i].GetComponent<Slider>().normalizedValue-rateOfChange;
 
 			}
