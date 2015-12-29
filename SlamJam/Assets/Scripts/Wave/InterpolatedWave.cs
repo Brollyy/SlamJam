@@ -1,17 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Wave : BaseWave
+public class InterpolatedWave : BaseWave
 {
 	//An AudioSource object so the music can be played
 	private AudioSource[] aSources = new AudioSource[4];
 	public AudioClip[] tracks = new AudioClip[4];
+	public AnimationCurve[] tracksPriority = new AnimationCurve[4]
+	{
+		AnimationCurve.Linear(0.0F, 1.0F, 64.0F, 1.0F), 
+		AnimationCurve.Linear(0.0F, 1.0F, 64.0F, 1.0F), 
+		AnimationCurve.Linear(0.0F, 1.0F, 64.0F, 1.0F), 
+		AnimationCurve.Linear(0.0F, 1.0F, 64.0F, 1.0F)
+	};
 	public bool[] enabledTracks = new bool[4];
 	//A float array that stores the audio samples
-	public float[,] samples = new float[4, 64];
-	private float[] tempSamples = new float[64];
-	public float numberOfSamples = 48;
-	private float a;
+	public float[] samples = new float[64];
 	//A renderer that will draw a line at the screen
 	private LineRenderer lRenderer;
 	//The transform attached to this game object
@@ -19,9 +23,19 @@ public class Wave : BaseWave
 	private Vector2 goTransform2D;
 	//The position of the current point. Will also be the position of each point of the line.
 	private Vector2 pointPos;
+	private Vector2 targetPointPos;
 	//An array that stores the Transforms of all instantiated points
 	private Vector2[] pointsTransform;
 	private Vector2[] relativePoints;
+	private const int length = 64;
+
+	private Vector2[] interpolationPoints;
+	private float cutOut = Mathf.Exp (-Mathf.Exp(1.0F));
+	private float expScale = 64.0F * Mathf.Exp (1.0F) / (length * length);
+	public float inBetweenRatio = 0.5F;
+	public float[] A = new float[8];
+	public float[] B = new float[8];
+	public float[] C = new float[8];
 
 	private GameObject[] areas;
 	private Vector2[] areaVertices;
@@ -43,14 +57,18 @@ public class Wave : BaseWave
 
 	void Start()
 	{
-		int length = samples.GetLength(1);
 		goTransform2D = new Vector2(goTransform.position.x, goTransform.position.y);
-		a = (64.0F - numberOfSamples) / ((numberOfSamples + 1.0F) * numberOfSamples);
 		//The line should have the same number of points as the number of samples
 		lRenderer.SetVertexCount(length);
 		//The pointsTransform array should be initialized with the same length as the samples array
 		pointsTransform = new Vector2[length];
 		relativePoints = new Vector2[length];
+
+		interpolationPoints = new Vector2[9];
+		for (int i = 0; i < 9; ++i) {
+			interpolationPoints [i] = new Vector2 (0.125F*i*length, 0.0F);
+		}
+
 		areas = new GameObject[length-1];
 		areaVertices = new Vector2[4];
 		areaVertices [0] = new Vector2 ();
@@ -74,7 +92,7 @@ public class Wave : BaseWave
 		{
 			//Get the recently instantiated point Transform component
 			smoothingVelocities[i] = Vector2.zero;
-			relativePoints [i] = new Vector2 ((i + a * i * (i + 1)) * goTransform.lossyScale.x, 0);
+			relativePoints [i] = new Vector2 (i * goTransform.lossyScale.x, 0);
 			pointsTransform [i] = goTransform2D + relativePoints [i];
 
 		}
@@ -97,32 +115,36 @@ public class Wave : BaseWave
 
 	void Update ()
 	{
-		int length = samples.GetLength(1);
-		//Obtain the samples from the frequency bands of the attached AudioSource
 		for (int i = 0; i < 4; ++i) {
+			float samplesSum = 0.0F;
 			if (enabledTracks [i]) {
-				aSources[i].GetSpectrumData (tempSamples, 0, FFTWindow.BlackmanHarris);
-				for (int j = 0; j < length; ++j) {
-					samples [i, j] = tempSamples [j];
+				aSources[i].GetSpectrumData (samples, 0, FFTWindow.BlackmanHarris);
+				for (int j = 0; j < 64; ++j) {
+					samplesSum += samples [j] * tracksPriority [i].Evaluate (j);
 				}
-			}
-			else {
-				for (int j = 0; j < length; ++j) {
-					samples [i, j] = 0.0F;
-				}
+				interpolationPoints [2*i + 1].y = samplesSum * amplitude;
 			}
 		}
-		//For each sample
-		for(int i=0; i<numberOfSamples;i++)
-		{
-			/*Set the pointPos Vector3 to the same value as the position of the corresponding
-			 * point. However, set it's Y element according to the current sample.*/
-			float samplesSum = 0;
-			for (int j = 0; j < 4; ++j) {
-				samplesSum += this.volume[j]*samples [j, i];
-			}
-			pointPos = Vector2.SmoothDamp(relativePoints[i], new Vector2(relativePoints[i].x, goTransform.lossyScale.y*Mathf.Clamp(samplesSum*(amplitude*(Mathf.Exp(0.12F*i-1.2F))),0,amplitude)), ref smoothingVelocities[i], smoothingTime);
 
+		for (int i = 1; i < 4; ++i) {
+			interpolationPoints [2 * i].y = inBetweenRatio * Mathf.Min (interpolationPoints [2 * i - 1].y, interpolationPoints [2 * i + 1].y);
+		}
+
+		for (int j = 0; j < 8; ++j) {
+			A [j] = Mathf.Abs (interpolationPoints [j + 1].y - interpolationPoints [j].y);
+			B [j] = interpolationPoints [j + ((j % 2 == 0) ? 1 : 0)].x;
+			C [j] = interpolationPoints [j + ((j % 2 == 0) ? 0 : 1)].y;
+		}
+
+		//For each sample
+		for(int i=0; i<length;i++)
+		{
+			int j = 8 * i / length;
+			float newValue =  A[j]* (Mathf.Exp (expScale * (i - B[j]) * (B[j] - i)) - cutOut) + C[j];
+			targetPointPos = relativePoints [i];
+			targetPointPos.y = goTransform.lossyScale.y * newValue;
+			//pointPos = Vector2.SmoothDamp(relativePoints[i], new Vector2(relativePoints[i].x, goTransform.lossyScale.y*newValue), ref smoothingVelocities[i], smoothingTime);
+			pointPos = Vector2.Lerp(relativePoints[i], targetPointPos, 0.05F);
 			//Set the point to the new Y position
 			relativePoints[i] = pointPos;
 			pointsTransform[i] = relativePoints [i] + goTransform2D;
