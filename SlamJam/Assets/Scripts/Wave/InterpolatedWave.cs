@@ -27,7 +27,7 @@ public class InterpolatedWave : BaseWave
 	//An array that stores the Transforms of all instantiated points
 	private Vector2[] pointsTransform;
 	private Vector2[] relativePoints;
-	private const int length = 64;
+	private const int length = 128;
 
 	private Vector2[] interpolationPoints;
 	private float cutOut = Mathf.Exp (-Mathf.Exp(1.0F));
@@ -99,12 +99,12 @@ public class InterpolatedWave : BaseWave
 		for (int i = 0; i < length-1; ++i) {
 			areas [i] = new GameObject ("Wave area " + i);
 			areas [i].transform.parent = goTransform;
-			areas[i].AddComponent<PolygonCollider2D> ();
+			areas[i].AddComponent<EdgeCollider2D> ();
 			areaVertices [0].Set (pointsTransform[i].x, goTransform2D.y);
 			areaVertices [1].Set (pointsTransform[i+1].x, goTransform2D.y);
 			areaVertices [2] = pointsTransform [i];
 			areaVertices [3] = pointsTransform [i + 1];
-			areas[i].GetComponent<PolygonCollider2D> ().points = areaVertices;
+			areas [i].GetComponent<EdgeCollider2D> ().points = areaVertices;
 			areas [i].AddComponent<MeshRenderer> ().material = lRenderer.material;
 			areas [i].AddComponent<MeshFilter> ();
 			areas [i].AddComponent<Rigidbody2D> ().isKinematic = true;
@@ -143,8 +143,8 @@ public class InterpolatedWave : BaseWave
 			float newValue =  A[j]* (Mathf.Exp (expScale * (i - B[j]) * (B[j] - i)) - cutOut) + C[j];
 			targetPointPos = relativePoints [i];
 			targetPointPos.y = goTransform.lossyScale.y * newValue;
-			//pointPos = Vector2.SmoothDamp(relativePoints[i], new Vector2(relativePoints[i].x, goTransform.lossyScale.y*newValue), ref smoothingVelocities[i], smoothingTime);
-			pointPos = Vector2.Lerp(relativePoints[i], targetPointPos, 0.05F);
+
+			pointPos = Vector2.SmoothDamp(relativePoints[i], targetPointPos, ref smoothingVelocities[i], smoothingTime);
 			//Set the point to the new Y position
 			relativePoints[i] = pointPos;
 			pointsTransform[i] = relativePoints [i] + goTransform2D;
@@ -159,7 +159,9 @@ public class InterpolatedWave : BaseWave
 			areaVertices [1].Set (pointsTransform[i+1].x, goTransform2D.y);
 			areaVertices [2] = pointsTransform [i];
 			areaVertices [3] = pointsTransform [i + 1];
-			areas [i].GetComponent<PolygonCollider2D> ().points = areaVertices;
+			/*areas [i].GetComponent<PolygonCollider2D> ().points[2].y = pointsTransform[i].y;
+			areas [i].GetComponent<PolygonCollider2D> ().points[3].y = pointsTransform [i+1].y;*/
+			areas [i].GetComponent<EdgeCollider2D> ().points = areaVertices;
 			meshGenerators [i].GetMesh ();
 			areas [i].GetComponent<SmoothingSpeedStorage> ().smoothingSpeed1 = smoothingVelocities [i];
 			areas [i].GetComponent<SmoothingSpeedStorage> ().smoothingSpeed2 = smoothingVelocities [i + 1];

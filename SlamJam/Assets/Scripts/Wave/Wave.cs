@@ -81,12 +81,12 @@ public class Wave : BaseWave
 		for (int i = 0; i < length-1; ++i) {
 			areas [i] = new GameObject ("Wave area " + i);
 			areas [i].transform.parent = goTransform;
-			areas[i].AddComponent<PolygonCollider2D> ();
+			areas[i].AddComponent<EdgeCollider2D> ();
 			areaVertices [0].Set (pointsTransform[i].x, goTransform2D.y);
 			areaVertices [1].Set (pointsTransform[i+1].x, goTransform2D.y);
 			areaVertices [2] = pointsTransform [i];
 			areaVertices [3] = pointsTransform [i + 1];
-			areas[i].GetComponent<PolygonCollider2D> ().points = areaVertices;
+			areas[i].GetComponent<EdgeCollider2D> ().points = areaVertices;
 			areas [i].AddComponent<MeshRenderer> ().material = lRenderer.material;
 			areas [i].AddComponent<MeshFilter> ();
 			areas [i].AddComponent<Rigidbody2D> ().isKinematic = true;
@@ -137,7 +137,7 @@ public class Wave : BaseWave
 			areaVertices [1].Set (pointsTransform[i+1].x, goTransform2D.y);
 			areaVertices [2] = pointsTransform [i];
 			areaVertices [3] = pointsTransform [i + 1];
-			areas [i].GetComponent<PolygonCollider2D> ().points = areaVertices;
+			areas [i].GetComponent<EdgeCollider2D> ().points = areaVertices;
 			meshGenerators [i].GetMesh ();
 			areas [i].GetComponent<SmoothingSpeedStorage> ().smoothingSpeed1 = smoothingVelocities [i];
 			areas [i].GetComponent<SmoothingSpeedStorage> ().smoothingSpeed2 = smoothingVelocities [i + 1];

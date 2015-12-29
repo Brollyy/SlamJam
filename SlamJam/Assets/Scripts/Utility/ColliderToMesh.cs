@@ -17,7 +17,7 @@ public class ColliderToMesh {
 	}
 
 	public void GetMesh() {
-		PolygonCollider2D pc2 = source.GetComponent<PolygonCollider2D>();
+		EdgeCollider2D pc2 = source.GetComponent<EdgeCollider2D>();
 
 		MeshFilter mf = source.GetComponent<MeshFilter>();
 		Vector2[] points = pc2.points;

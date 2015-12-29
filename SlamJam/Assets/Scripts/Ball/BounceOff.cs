@@ -9,8 +9,8 @@ public class BounceOff : MonoBehaviour {
 		if (col.gameObject.name.StartsWith ("Wave area")) {
 			Vector2 speed = (col.gameObject.GetComponent<SmoothingSpeedStorage> ().smoothingSpeed1 + col.gameObject.GetComponent<SmoothingSpeedStorage> ().smoothingSpeed2)/2;
 			if (speed.y > 0) {
-				Vector2 leftEdge = col.gameObject.GetComponent<PolygonCollider2D> ().points [2];
-				Vector2 rightEdge = col.gameObject.GetComponent<PolygonCollider2D> ().points [3];
+				Vector2 leftEdge = col.gameObject.GetComponent<EdgeCollider2D> ().points [2];
+				Vector2 rightEdge = col.gameObject.GetComponent<EdgeCollider2D> ().points [3];
 				Vector2 slope = rightEdge - leftEdge;
 				slope.Set (-slope.y, slope.x);
 				slope.Normalize ();
