@@ -37,6 +37,7 @@ public class ShootBalls : MonoBehaviour {
 			GameObject newBall = new GameObject("Ball" + balls.Count);
 			newBall.transform.parent = gameObject.transform;
 			newBall.transform.localPosition = Vector3.zero;
+			newBall.transform.localScale = new Vector3 (1.0F, 1.0F, 1.0F);
 			newBall.AddComponent<MeshRenderer> ().material = materialOfBall;
 			newBall.AddComponent<MeshFilter> ().mesh = meshOfBall;
 			newBall.AddComponent<CircleCollider2D> ().sharedMaterial = pMaterialOfBall;
