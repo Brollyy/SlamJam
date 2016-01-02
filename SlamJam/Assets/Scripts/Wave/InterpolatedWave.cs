@@ -27,15 +27,15 @@ public class InterpolatedWave : BaseWave
 	//An array that stores the Transforms of all instantiated points
 	private Vector2[] pointsTransform;
 	private Vector2[] relativePoints;
-	private const int length = 128;
+	public int length = 128;
 
 	private Vector2[] interpolationPoints;
 	private float cutOut = Mathf.Exp (-Mathf.Exp(1.0F));
-	private float expScale = 64.0F * Mathf.Exp (1.0F) / (length * length);
+	private float expScale;
 	public float inBetweenRatio = 0.5F;
-	public float[] A = new float[8];
-	public float[] B = new float[8];
-	public float[] C = new float[8];
+	private float[] A = new float[8];
+	private float[] B = new float[8];
+	private float[] C = new float[8];
 
 	private GameObject[] areas;
 	private Vector2[] areaVertices;
@@ -57,6 +57,7 @@ public class InterpolatedWave : BaseWave
 
 	void Start()
 	{
+		expScale = 64.0F * Mathf.Exp (1.0F) / (length * length);
 		goTransform2D = new Vector2(goTransform.position.x, goTransform.position.y);
 		//The line should have the same number of points as the number of samples
 		lRenderer.SetVertexCount(length);
@@ -143,7 +144,10 @@ public class InterpolatedWave : BaseWave
 			float newValue =  A[j]* (Mathf.Exp (expScale * (i - B[j]) * (B[j] - i)) - cutOut) + C[j];
 			targetPointPos = relativePoints [i];
 			targetPointPos.y = goTransform.lossyScale.y * newValue;
-
+			/*if (smoothingVelocities [i].y * targetPointPos.y < 0.0F) {
+				smoothingVelocities [i].y = 0.0F;
+			}*/
+			smoothingVelocities [i].y *= 0.01F;
 			pointPos = Vector2.SmoothDamp(relativePoints[i], targetPointPos, ref smoothingVelocities[i], smoothingTime);
 			//Set the point to the new Y position
 			relativePoints[i] = pointPos;
