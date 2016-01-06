@@ -4,42 +4,53 @@ using System.Collections;
 public class Platform : MonoBehaviour {
 
 	private AudioSource aSource;
-	public float[] samples = new float[64];
-	public AnimationCurve trackPriority = AnimationCurve.Linear(0.0F,1.0F,63.0F,1.0F);
 	public int trackIndex = 0;
 
-	public float amplitude = 50.0F;
-	public Vector2 direction = new Vector2 (1.0F, 0.0F);
-	private Vector2 movement = Vector2.zero;
+	public Vector3 positionChange = Vector3.zero;
+	public Vector3 rotationChange = Vector3.zero;
+	public Vector3 scaleChange = new Vector3(1.0F, 1.0F, 1.0F);
 
-	private Vector2 smoothingVelocity = Vector2.zero;
+	private Vector3[] start;
+	private Vector3[] end;
+	private Vector3[] transformation = new Vector3[3];
+	private Vector3 fixedRotation;
+
+	private Vector3[] smoothingVelocities = new Vector3[3] {Vector3.zero, Vector3.zero, Vector3.zero};
 	public float smoothingTime = 0.05F;
 
 	// Use this for initialization
 	void Start () {
 		GameObject track = GameObject.FindGameObjectWithTag ("Tracklist");
-		if (track) {
-			AudioSource[] aSources = track.GetComponents<AudioSource> ();
-			if (trackIndex >= 0 && trackIndex < aSources.Length) {
-				aSource = aSources [trackIndex];
-			}
+		if (track && trackIndex >= 0 && trackIndex < track.GetComponents<AudioSource>().Length) {
+			aSource = track.GetComponents<AudioSource> () [trackIndex];
 		}
-
-		direction.Normalize ();
+			
+		start = new Vector3[3] {
+			gameObject.transform.localPosition,
+			gameObject.transform.localEulerAngles,
+			gameObject.transform.localScale
+		};
+		end = new Vector3[3] {
+			start[0] + positionChange,
+			start[1] + rotationChange,
+			new Vector3(start[2].x * scaleChange.x, start[2].y * scaleChange.y, start[2].z * scaleChange.z)
+		};
+		fixedRotation = start [1];
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (aSource) {
-			aSource.GetSpectrumData (samples, 0, FFTWindow.BlackmanHarris);
-			float average = 0.0F;
-			for (int i = 0; i < 64; ++i) {
-				average += samples [i] * trackPriority.Evaluate(i);
+			for (int i = 0; i < 3; ++i) {
+				transformation [i] = Vector3.Lerp (start [i], end [i], aSource.volume);
 			}
-			average /= 64.0F;
-
-			movement = Vector2.SmoothDamp (movement, direction * average * amplitude, ref smoothingVelocity, smoothingTime);
-			gameObject.transform.localPosition = movement;
+			gameObject.transform.localPosition = Vector3.SmoothDamp (gameObject.transform.localPosition,
+				transformation [0], ref smoothingVelocities [0], smoothingTime);
+			fixedRotation = Vector3.SmoothDamp (fixedRotation,
+				transformation [1], ref smoothingVelocities [1], smoothingTime);
+			gameObject.transform.localEulerAngles = fixedRotation;
+			gameObject.transform.localScale = Vector3.SmoothDamp (gameObject.transform.localScale,
+				transformation [2], ref smoothingVelocities [2], smoothingTime);
 		}
 	}
 }
