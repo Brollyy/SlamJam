@@ -49,3 +49,10 @@ Temporary Items
 # Unity local cache
 SlamJam/Library
 SlamJam/Temp
+SlamJam/SlamJam.userprefs
+
+#Build and Debug files
+*.pdb
+*.dll
+*Assembly-CSharp*
+*.csproj
