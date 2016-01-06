@@ -46,8 +46,17 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Ball\BounceOff.cs" />
+     <Compile Include="Assets\Scripts\Controls\BallControls.cs" />
      <Compile Include="Assets\Scripts\Controls\KeyboardControls.cs" />
+     <Compile Include="Assets\Scripts\Controls\TrackKeyboardControls.cs" />
+     <Compile Include="Assets\Scripts\GameModes\ShootBalls.cs" />
+     <Compile Include="Assets\Scripts\Platform\Platform.cs" />
      <Compile Include="Assets\Scripts\Utility\ColliderToMesh.cs" />
+     <Compile Include="Assets\Scripts\Utility\FPS.cs" />
+     <Compile Include="Assets\Scripts\Utility\LevelChanger.cs" />
+     <Compile Include="Assets\Scripts\Wave\BaseWave.cs" />
+     <Compile Include="Assets\Scripts\Wave\InterpolatedTrack.cs" />
+     <Compile Include="Assets\Scripts\Wave\InterpolatedWave.cs" />
      <Compile Include="Assets\Scripts\Wave\SmoothingSpeedStorage.cs" />
      <Compile Include="Assets\Scripts\Wave\Wave.cs" />
      <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\SortingLayerExposed.cs" />
