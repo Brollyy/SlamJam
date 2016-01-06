@@ -18,9 +18,8 @@ public class BallControls : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		for (int i = 0; i < 2; ++i) {
-			if (Mathf.Approximately(rb.velocity.y, 0.0F) 
-				&& Input.GetKey (controls [i]) 
-				&& Mathf.Abs (rb.velocity.x) < maxSpeed) {
+			if (Input.GetKey (controls [i]) 
+				&& rb.velocity.magnitude < maxSpeed) {
 
 				rb.AddForce (forces [i]);
 			} 
