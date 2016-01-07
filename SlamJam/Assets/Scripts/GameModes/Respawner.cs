@@ -14,7 +14,7 @@ public class Respawner : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown (respawnButton)) {
-			//timer.GetComponent<Timer> ().Restart ();
+			timer.GetComponent<Timer> ().Restart ();
 			Transform child = gameObject.GetComponentsInChildren<Transform>()[1];
 			child.localPosition = Vector3.zero;
 			child.localEulerAngles = Vector3.zero;

@@ -9,7 +9,7 @@ public class TrackKeyboardControls : MonoBehaviour {
 	public KeyCode[] upCodes = new KeyCode[] { KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R };
 	public KeyCode[] downCodes = new KeyCode[] { KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F };
 	private GameObject tracklist;
-	private const float rateOfChange = 0.05F;
+	public float rateOfChange = 0.05F;
 	private AudioSource[] sources;
 	private int n;
 
