@@ -5,14 +5,19 @@ using System;
 
 public class Timer : MonoBehaviour {
 
+	public float animationTime = 1.5F;
+
 	private float timer = 0.0F;
 	private TimeSpan timeSpan;
+	private bool active = true;
 
 	// Use this for initialization
 	void FixedUpdate () {
-		timer += Time.fixedDeltaTime;
-		timeSpan = TimeSpan.FromSeconds (timer);
-		gameObject.GetComponent<Text> ().text = string.Format ("{0:D2} : {1:D2} : {2:D2}", timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds/10);
+		if (active) {
+			timer += Time.fixedDeltaTime;
+			timeSpan = TimeSpan.FromSeconds (timer);
+			gameObject.GetComponent<Text> ().text = string.Format ("{0:D2} : {1:D2} : {2:D2}", timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds / 10);
+		} 
 	}
 
 	public void Restart() {
@@ -21,5 +26,9 @@ public class Timer : MonoBehaviour {
 
 	public TimeSpan GetTime() {
 		return timeSpan;
+	}
+
+	public void Stop() {
+		active = false;
 	}
 }
