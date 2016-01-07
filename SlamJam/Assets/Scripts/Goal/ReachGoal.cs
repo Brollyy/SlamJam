@@ -26,7 +26,7 @@ public class ReachGoal : MonoBehaviour {
 		if (col.gameObject.name == "Player") {
 			levelDone = true;
 			GameObject.FindGameObjectWithTag ("Timer").GetComponent<Timer> ().Stop();
-			GameObject.Find ("Canvas").GetComponent<Interface> ().ShowEndInterface ();
+			GameObject.FindGameObjectWithTag ("Canvas").GetComponent<Interface> ().ShowEndInterface ();
 		}
 	}
 }
