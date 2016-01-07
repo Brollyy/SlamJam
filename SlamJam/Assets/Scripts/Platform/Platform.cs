@@ -8,7 +8,7 @@ public class Platform : MonoBehaviour {
 
 	public Vector3 positionChange = Vector3.zero;
 	public Vector3 rotationChange = Vector3.zero;
-	public Vector3 scaleChange = new Vector3(1.0F, 1.0F, 1.0F);
+	public Vector3 scaleChange = Vector3.zero;
 
 	private Vector3[] start;
 	private Vector3[] end;
@@ -33,7 +33,7 @@ public class Platform : MonoBehaviour {
 		end = new Vector3[3] {
 			start[0] + positionChange,
 			start[1] + rotationChange,
-			new Vector3(start[2].x * scaleChange.x, start[2].y * scaleChange.y, start[2].z * scaleChange.z)
+			start[2] + scaleChange
 		};
 		fixedRotation = start [1];
 	}
@@ -52,5 +52,9 @@ public class Platform : MonoBehaviour {
 			gameObject.transform.localScale = Vector3.SmoothDamp (gameObject.transform.localScale,
 				transformation [2], ref smoothingVelocities [2], smoothingTime);
 		}
+	}
+
+	public float Magnitude() {
+		return aSource.volume;
 	}
 }
