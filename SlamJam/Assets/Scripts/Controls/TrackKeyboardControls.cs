@@ -20,20 +20,25 @@ public class TrackKeyboardControls : MonoBehaviour {
 		sources = tracklist.GetComponents<AudioSource> ();
 		n = Mathf.Min (4, sources.Length);
 		for (int i = 0; i < n; ++i) {
-			sliders [i] = sources[i].volume;
+			if (sources [i].clip)
+				sliders [i] = sources [i].volume;
+			else
+				sliders [i] = 0.0F;
 		}
 	}
 
 	// Update is called once per frame
 	void Update () {
 		for (int i = 0; i < n; ++i) {
-			if (Input.GetKey (upCodes[i]) && sliders[i] < 1.0F) {
-				sliders [i] += rateOfChange;
-				sources[i].volume = sliders [i];
-			}	
-			if (Input.GetKey (downCodes[i]) && sliders[i] >= 0.0F) {
-				sliders [i] -= rateOfChange;
-				sources[i].volume = (sliders [i] >= 0.0F ? sliders[i] : 0.0F);
+			if (sources [i].clip) {
+				if (Input.GetKey (upCodes [i]) && sliders [i] < 1.0F) {
+					sliders [i] += rateOfChange;
+					sources [i].volume = sliders [i];
+				}	
+				if (Input.GetKey (downCodes [i]) && sliders [i] >= 0.0F) {
+					sliders [i] -= rateOfChange;
+					sources [i].volume = (sliders [i] >= 0.0F ? sliders [i] : 0.0F);
+				}
 			}
 		}
 	}
