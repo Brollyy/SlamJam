@@ -19,6 +19,9 @@ public class FixedCurvePlatform : MonoBehaviour {
 	private Vector3[] start;
 	private Vector3[] end;
 
+	public int trackIndex = -1;
+	private AudioSource aSource;
+
 	// Use this for initialization
 	void Start () {
 
@@ -33,10 +36,22 @@ public class FixedCurvePlatform : MonoBehaviour {
 			start[2] + scaleChange
 		};
 		actualTime = startingTime;
+
+		AudioSource[] aSources = GameObject.FindGameObjectWithTag ("Tracklist").GetComponents<AudioSource> ();
+		if (trackIndex >= 0 && trackIndex < aSources.Length) {
+			aSource = aSources [trackIndex];
+		}
 	}
 
 	// Update is called once per frame
 	void FixedUpdate () {
+
+		if (aSource) {
+			end [0] = start [0] + positionChange * aSource.volume;
+			end [1] = start [1] + rotationChange * aSource.volume;
+			end [2] = start [2] + scaleChange * aSource.volume;
+		}
+
 		gameObject.transform.localPosition = Vector3.Lerp (start [0], end [0], positionCurve.Evaluate (actualTime / time));
 		gameObject.transform.localEulerAngles = Vector3.Lerp (start [1], end [1], rotationCurve.Evaluate (actualTime / time));
 		gameObject.transform.localScale = Vector3.Lerp (start [2], end [2], scaleCurve.Evaluate (actualTime / time));

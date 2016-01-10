@@ -27,6 +27,12 @@ public class ReachGoal : MonoBehaviour {
 			levelDone = true;
 			GameObject.FindGameObjectWithTag ("Timer").GetComponent<Timer> ().Stop();
 			GameObject.FindGameObjectWithTag ("Canvas").GetComponent<Interface> ().ShowEndInterface ();
+			for (int i = 0; i < transform.childCount; ++i) {
+				Transform tf = transform.GetChild (i);
+				if (tf.name.StartsWith ("Particle")) {
+					tf.gameObject.SetActive (true);
+				}
+			}
 		}
 	}
 }
