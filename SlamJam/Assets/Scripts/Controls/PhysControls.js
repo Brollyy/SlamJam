@@ -9,17 +9,15 @@ private var oscHandler : Osc;
 
 private var data : float[];
 
-private var wave : BaseWave;
-private var UIsliders : GameObject[];
+private var sources : AudioSource[];
 
 public function Start ()
 {	
-	wave = GameObject.FindGameObjectWithTag("Wave").GetComponent(BaseWave);
-	UIsliders = new GameObject[4];
-	for(var i : int = 0; i < 4; ++i) {
-		UIsliders[i] = GameObject.FindGameObjectWithTag("Slider"+i);
-	}
+	sources = GameObject.FindGameObjectWithTag("Tracklist").GetComponents.<AudioSource>();
 	data = new float[4];
+	for(var i : int = 0; i < 4; ++i) {
+		data[i] = 0.0F;
+	}
 
 	var udp : UDPPacketIO = GetComponent("UDPPacketIO");
 	udp.init(UDPHost, broadcastPort, listenerPort);
@@ -33,8 +31,7 @@ public function Start ()
 
 function Update () {
 	for(var i : int = 0; i < 4; ++i) {
-		wave.setVolume (i, data[i] );
-		UIsliders [i].GetComponent(Slider).normalizedValue = data[i];
+		sources[i].volume = data[i] ;
 	}
 }	
 

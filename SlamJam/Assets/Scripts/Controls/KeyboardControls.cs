@@ -8,7 +8,7 @@ public class KeyboardControls : MonoBehaviour {
 	public float[] sliders;
 	private KeyCode[] upCodes;
 	private KeyCode[] downCodes;
-	private BaseWave wave;
+	private Wave wave;
 	private const float rateOfChange = 0.05F;
 	private List<GameObject> UIsliders;
 
@@ -17,7 +17,7 @@ public class KeyboardControls : MonoBehaviour {
 		UIsliders = new List<GameObject>();
 		upCodes = new KeyCode[] { KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R };
 		downCodes = new KeyCode[] { KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F };
-		wave = gameObject.GetComponent<BaseWave> ();
+		wave = gameObject.GetComponent<Wave> ();
 		sliders = new float[4];
 		for (int i = 0; i < 4; ++i) {
 			sliders [i] = 0.0F;

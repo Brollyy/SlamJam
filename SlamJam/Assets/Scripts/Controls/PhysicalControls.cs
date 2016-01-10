@@ -5,8 +5,9 @@ using System.Collections.Generic;
 
 public class PhysicalControls : MonoBehaviour {
 
-	private BaseWave wave;
-	private List<GameObject> UIsliders;
+	private AudioSource[] aSources;
+	private float[] volumes;
+	private int n;
 
 	public string OSCHost = "127.0.0.1";
 	public int SendToPort = 3200;
@@ -14,10 +15,11 @@ public class PhysicalControls : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		UIsliders = new List<GameObject>();
-		wave = GameObject.FindGameObjectWithTag("Wave").GetComponent<BaseWave> ();
-		for (int i = 0; i < 4; ++i) {
-			UIsliders.Add(GameObject.FindGameObjectWithTag ("Slider"+i)) ;
+		aSources = GameObject.FindGameObjectWithTag("Tracklist").GetComponents<AudioSource> ();
+		n = Mathf.Min (4, aSources.Length);
+		volumes = new float[n];
+		for (int i = 0; i < n; ++i) {
+			volumes [i] = 0.0F;
 		}
 
 		UDPPacketIO udp = gameObject.GetComponent<UDPPacketIO> ();
@@ -29,13 +31,15 @@ public class PhysicalControls : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		for (int i = 0; i < n; ++i) {
+			aSources [i].volume = volumes [i];
+		}
 	}
 
 	void HandleControllerMessage(OscMessage oscM) {
-		for (int i = 0; i < oscM.Values.Count; ++i) {
+		for (int i = 0; i < Mathf.Min(oscM.Values.Count, n); ++i) {
 			float value = (float)oscM.Values [i] / 1023.0F;
-			wave.setVolume (i, value );
-			UIsliders [i].GetComponent<Slider> ().normalizedValue = value;
+			volumes[i] = value;
 		}
 	}
 }
