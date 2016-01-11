@@ -8,7 +8,6 @@ public class ShootBalls : MonoBehaviour {
 	public Material materialOfBall;
 	public Mesh meshOfBall;
 	public PhysicsMaterial2D pMaterialOfBall;
-	public float ballBounce = 15.0F;
 	public float ballLifeTime = 5.0F;
 	private List<GameObject> balls;
 	private List<float> durations;
@@ -42,7 +41,7 @@ public class ShootBalls : MonoBehaviour {
 			newBall.AddComponent<MeshFilter> ().mesh = meshOfBall;
 			newBall.AddComponent<CircleCollider2D> ().sharedMaterial = pMaterialOfBall;
 			newBall.AddComponent<Rigidbody2D> ().AddForce (initialForce);
-			newBall.AddComponent<BounceOff> ().bounce = ballBounce;
+			newBall.AddComponent<BounceOff> ();
 			balls.Add (newBall);
 			durations.Add (Time.time);
 		}

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class InterpolatedWave : BaseWave
+public class InterpolatedWave : MonoBehaviour
 {
 	//An AudioSource object so the music can be played
 	private AudioSource[] aSources = new AudioSource[4];
@@ -172,7 +172,7 @@ public class InterpolatedWave : BaseWave
 		}
 	}
 
-	public override void setVolume(int track, float volume) {
+	public void setVolume(int track, float volume) {
 		if (track >= 0 && track < 4) {
 			if (volume >= 0.0F && volume <= 1.0F) {
 				this.volume [track] = volume;
@@ -183,7 +183,7 @@ public class InterpolatedWave : BaseWave
 		}
 	}
 
-	public override void ToggleTrack(int track) {
+	public void ToggleTrack(int track) {
 		if (track >= 0 && track < 4) {
 			enabledTracks [track] = !enabledTracks [track];
 			if (enabledTracks [track])

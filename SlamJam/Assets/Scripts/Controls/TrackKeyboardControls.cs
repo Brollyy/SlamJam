@@ -9,33 +9,36 @@ public class TrackKeyboardControls : MonoBehaviour {
 	public KeyCode[] upCodes = new KeyCode[] { KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R };
 	public KeyCode[] downCodes = new KeyCode[] { KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F };
 	private GameObject tracklist;
-	private const float rateOfChange = 0.05F;
-	private List<GameObject> UIsliders;
+	public float rateOfChange = 0.05F;
+	private AudioSource[] sources;
+	private int n;
 
 	// Use this for initialization
 	void Start () {
-		UIsliders = new List<GameObject>();
 		tracklist = GameObject.FindGameObjectWithTag("Tracklist");
 		sliders = new float[4];
-		for (int i = 0; i < 4; ++i) {
-			sliders [i] = tracklist.GetComponents<AudioSource>()[i].volume;
-			UIsliders.Add(GameObject.FindGameObjectWithTag ("Slider"+i)) ;
-			UIsliders [i].GetComponent<Slider> ().normalizedValue = sliders [i];
+		sources = tracklist.GetComponents<AudioSource> ();
+		n = Mathf.Min (4, sources.Length);
+		for (int i = 0; i < n; ++i) {
+			if (sources [i].clip)
+				sliders [i] = sources [i].volume;
+			else
+				sliders [i] = 0.0F;
 		}
 	}
 
 	// Update is called once per frame
 	void Update () {
-		for (int i = 0; i < 4; ++i) {
-			if (Input.GetKey (upCodes[i]) && sliders[i] < 1.0F) {
-				sliders [i] += rateOfChange;
-				tracklist.GetComponents<AudioSource>()[i].volume = sliders [i];
-				UIsliders [i].GetComponent<Slider>().normalizedValue = sliders[i];
-			}	
-			if (Input.GetKey (downCodes[i]) && sliders[i] >= 0.0F) {
-				sliders [i] -= rateOfChange;
-				tracklist.GetComponents<AudioSource>()[i].volume = (sliders [i] >= 0.0F ? sliders[i] : 0.0F);
-				UIsliders [i].GetComponent<Slider>().normalizedValue = sliders[i];
+		for (int i = 0; i < n; ++i) {
+			if (sources [i].clip) {
+				if (Input.GetKey (upCodes [i]) && sliders [i] < 1.0F) {
+					sliders [i] += rateOfChange;
+					sources [i].volume = sliders [i];
+				}	
+				if (Input.GetKey (downCodes [i]) && sliders [i] >= 0.0F) {
+					sliders [i] -= rateOfChange;
+					sources [i].volume = (sliders [i] >= 0.0F ? sliders [i] : 0.0F);
+				}
 			}
 		}
 	}
