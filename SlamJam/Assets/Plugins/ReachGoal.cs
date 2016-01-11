@@ -23,9 +23,16 @@ public class ReachGoal : MonoBehaviour {
 	void Update () {
 		if (levelDone) {
 			if (Input.GetKeyDown (proceedButton)) {
-				SceneManager.LoadScene (levelToLoad);
+				Complete ();
 			}
 		}
+	}
+
+	public bool Complete() {
+		if (levelDone) {
+			SceneManager.LoadScene (levelToLoad);
+		}
+		return levelDone;
 	}
 
 	void OnTriggerEnter2D(Collider2D col) {
