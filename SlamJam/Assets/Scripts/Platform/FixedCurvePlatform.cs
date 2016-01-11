@@ -23,6 +23,8 @@ public class FixedCurvePlatform : MonoBehaviour {
 	public int trackIndex = -1;
 	private AudioSource aSource;
 
+	public AudioClip[] bumpSounds;
+	private AudioSource bumpSource;
 	private ParticleSystem particles;
 
 	// Use this for initialization
@@ -46,6 +48,11 @@ public class FixedCurvePlatform : MonoBehaviour {
 		}
 
 		if(booster) particles = transform.parent.parent.FindChild ("Particle System").GetComponent<ParticleSystem>();
+
+		if (bumpSounds.Length > 0) {
+			bumpSource = gameObject.AddComponent<AudioSource> ();
+			bumpSource.loop = false;
+		}
 	}
 
 	// Update is called once per frame
@@ -73,6 +80,10 @@ public class FixedCurvePlatform : MonoBehaviour {
 				force *= transform.parent.gameObject.GetComponent<Platform> ().Magnitude ();
 			go.GetComponent<Rigidbody2D> ().AddForce (force);
 			particles.Play (true);
+			if (bumpSource) {
+				bumpSource.clip = bumpSounds[Random.Range (0, bumpSounds.Length)];
+				bumpSource.Play ();
+			}
 		}
 	}
 }

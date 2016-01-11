@@ -8,9 +8,15 @@ public class ReachGoal : MonoBehaviour {
 	public KeyCode proceedButton = KeyCode.Space;
 	private bool levelDone = false;
 
+	public AudioClip finishSound;
+	private AudioSource source;
+
 	// Use this for initialization
 	void Start () {
-		
+		if (finishSound) {
+			source = gameObject.AddComponent<AudioSource> ();
+			source.clip = finishSound;
+		}
 	}
 	
 	// Update is called once per frame
@@ -32,6 +38,9 @@ public class ReachGoal : MonoBehaviour {
 				if (tf.name.StartsWith ("Particle")) {
 					tf.gameObject.SetActive (true);
 				}
+			}
+			if (source) {
+				source.Play ();
 			}
 		}
 	}
