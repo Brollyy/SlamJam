@@ -14,6 +14,7 @@ public class FixedCurvePlatform : MonoBehaviour {
 	public AnimationCurve rotationCurve = AnimationCurve.Linear(0.0F, 0.0F, 1.0F, 1.0F);
 	public AnimationCurve scaleCurve = AnimationCurve.Linear(0.0F, 0.0F, 1.0F, 1.0F);
 
+	public bool booster = false;
 	public float boostForce = 100.0F;
 
 	private Vector3[] start;
@@ -21,6 +22,8 @@ public class FixedCurvePlatform : MonoBehaviour {
 
 	public int trackIndex = -1;
 	private AudioSource aSource;
+
+	private ParticleSystem particles;
 
 	// Use this for initialization
 	void Start () {
@@ -41,6 +44,8 @@ public class FixedCurvePlatform : MonoBehaviour {
 		if (trackIndex >= 0 && trackIndex < aSources.Length) {
 			aSource = aSources [trackIndex];
 		}
+
+		if(booster) particles = transform.parent.parent.FindChild ("Particle System").GetComponent<ParticleSystem>();
 	}
 
 	// Update is called once per frame
@@ -61,10 +66,13 @@ public class FixedCurvePlatform : MonoBehaviour {
 	}
 
 	public void Collide(GameObject go) {
-		Vector2 force = gameObject.transform.TransformDirection (scaleChange);
-		force *= boostForce;
-		if (transform.parent && transform.parent.gameObject.GetComponent<Platform> ())
-			force *= transform.parent.gameObject.GetComponent<Platform> ().Magnitude ();
-		go.GetComponent<Rigidbody2D> ().AddForce (force);
+		if (booster) {
+			Vector2 force = gameObject.transform.TransformDirection (scaleChange);
+			force *= boostForce;
+			if (transform.parent && transform.parent.gameObject.GetComponent<Platform> ())
+				force *= transform.parent.gameObject.GetComponent<Platform> ().Magnitude ();
+			go.GetComponent<Rigidbody2D> ().AddForce (force);
+			particles.Play (true);
+		}
 	}
 }
