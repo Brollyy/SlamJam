@@ -38,6 +38,7 @@ public class ReachGoal : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D col) {
 		if (col.gameObject.name == "Player") {
 			levelDone = true;
+			col.gameObject.GetComponent<Rigidbody2D> ().isKinematic = true;
 			GameObject.FindGameObjectWithTag ("Timer").GetComponent<Timer> ().StopTimer();
 			GameObject.FindGameObjectWithTag ("Canvas").GetComponent<Interface> ().ShowEndInterface ();
 			for (int i = 0; i < transform.childCount; ++i) {

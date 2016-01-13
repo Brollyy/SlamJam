@@ -46,14 +46,15 @@ public class Collectible : MonoBehaviour {
 	}
 
 	public void Remake() {
-		if (state == 3) {
+		if (state == 3 || state == 1) {
 			gameObject.GetComponent<CircleCollider2D> ().enabled = true;
+			time = 0.0F;
 			state = 2;
 		}
 	}
 
 	public void OnTriggerEnter2D(Collider2D col) {
-		if (state == 0) {
+		if (col.gameObject == player && !player.GetComponent<Rigidbody2D>().isKinematic && state == 0) {
 			part.Play ();
 			int streak = player.GetComponent<Streak> ().GetStreak ();
 			player.GetComponent<Streak> ().UpStreak ();
