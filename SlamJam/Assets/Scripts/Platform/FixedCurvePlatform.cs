@@ -58,9 +58,9 @@ public class FixedCurvePlatform : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (aSource) {
-			end [0] = start [0] + positionChange * aSource.volume;
-			end [1] = start [1] + rotationChange * aSource.volume;
-			end [2] = start [2] + scaleChange * aSource.volume;
+			end [0] = start [0] + positionChange * (aSource.clip ? aSource.volume : 0.0F);
+			end [1] = start [1] + rotationChange * (aSource.clip ? aSource.volume : 0.0F);
+			end [2] = start [2] + scaleChange * (aSource.clip ? aSource.volume : 0.0F);
 		}
 
 		gameObject.transform.localPosition = Vector3.Lerp (start [0], end [0], positionCurve.Evaluate (actualTime / time));
