@@ -57,7 +57,6 @@ public class FixedCurvePlatform : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
-
 		if (aSource) {
 			end [0] = start [0] + positionChange * aSource.volume;
 			end [1] = start [1] + rotationChange * aSource.volume;
@@ -81,8 +80,10 @@ public class FixedCurvePlatform : MonoBehaviour {
 			go.GetComponent<Rigidbody2D> ().AddForce (force);
 			particles.Play (true);
 			if (bumpSource) {
-				bumpSource.clip = bumpSounds[Random.Range (0, bumpSounds.Length)];
-				bumpSource.Play ();
+				//bumpSource.clip = bumpSounds[Random.Range (0, bumpSounds.Length)];
+				//bumpSource.Play (volume);
+
+				bumpSource.PlayOneShot(bumpSounds[Random.Range (0, bumpSounds.Length)], 0.35F);
 			}
 		}
 	}
