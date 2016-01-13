@@ -39,7 +39,7 @@ public class Platform : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		if (aSource) {
 			for (int i = 0; i < 3; ++i) {
 				transformation [i] = Vector3.Lerp (start [i], end [i], aSource.volume);
