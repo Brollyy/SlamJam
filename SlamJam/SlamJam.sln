@@ -1,6 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2008
 
+Project("{2A7BEFA9-73FF-B43B-FF75-F03BE5A20AD4}") = "SlamJam", "Assembly-CSharp-firstpass.csproj", "{502752B2-2C56-829D-BCD2-9D9645352907}"
+EndProject
 Project("{2A7BEFA9-73FF-B43B-FF75-F03BE5A20AD4}") = "SlamJam", "Assembly-CSharp.csproj", "{D8DA9EA4-E16E-F8FA-84F6-468A3E9F2CBF}"
 EndProject
 Project("{2A7BEFA9-73FF-B43B-FF75-F03BE5A20AD4}") = "SlamJam", "Assembly-CSharp-Editor.csproj", "{B9A946AE-6F5C-BFD2-6DDC-CD6D47E7BC1C}"
@@ -11,6 +13,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{502752B2-2C56-829D-BCD2-9D9645352907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{502752B2-2C56-829D-BCD2-9D9645352907}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{502752B2-2C56-829D-BCD2-9D9645352907}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{502752B2-2C56-829D-BCD2-9D9645352907}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D8DA9EA4-E16E-F8FA-84F6-468A3E9F2CBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D8DA9EA4-E16E-F8FA-84F6-468A3E9F2CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8DA9EA4-E16E-F8FA-84F6-468A3E9F2CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
