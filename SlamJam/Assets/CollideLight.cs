@@ -12,6 +12,7 @@ public class CollideLight : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		platforms = gameObject.GetComponentsInChildren<MeshRenderer> ();
+		baseColor = new Color[platforms.Length];
 		for (int i = 0; i < platforms.Length; i++) {
 			baseColor[i] = platforms [i].material.color;
 		}
