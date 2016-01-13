@@ -6,7 +6,7 @@ public class HueChange : MonoBehaviour {
 	float nextFlash = 0.2F;
 	public float flashRate = 0.5F;
 	int i = 0;
-
+	public float delay = 0.0F;
 	public Color[] colors;
 	
 	// Use this for initialization
@@ -15,7 +15,9 @@ public class HueChange : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		
+		if (Time.fixedTime < delay)
+			return;
+
 		if (nextFlash < flashRate) {
 			nextFlash += Time.fixedDeltaTime;
 

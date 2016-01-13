@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ReachGoal : MonoBehaviour {
 
 	public string levelToLoad = "mainMenu";
 	public KeyCode proceedButton = KeyCode.Space;
-	private bool levelDone = false;
+	public bool levelDone = false;
 
 	public AudioClip finishSound;
 	private AudioSource source;
