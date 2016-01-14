@@ -8,7 +8,7 @@ public class Fan : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		part = GameObject.Find("Particles").GetComponent<ParticleSystem> ();
+		part = transform.parent.Find("Particles").GetComponent<ParticleSystem> ();
 	}
 	
 	// Update is called once per frame
