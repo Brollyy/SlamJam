@@ -11,7 +11,7 @@ Arduino arduino;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-int buttonPin = 5;
+int buttonPin = 8;
 int buttonState = 0;
 int lastButtonState = 1;
 
@@ -33,14 +33,12 @@ void setup() {
    * send messages back to this sketch.
    */
   myRemoteLocation = new NetAddress("127.0.0.1", 12000);
-  for (int i = 0; i <= 13; i++)
-    arduino.pinMode(i, Arduino.INPUT);
 }
 
 
 void draw() {
   lastButtonState = buttonState;
-  buttonState = arduino.analogRead(buttonPin);
+  buttonState = arduino.digitalRead(buttonPin);
   
 
   background(0);
@@ -58,7 +56,7 @@ void draw() {
 
   if (lastButtonState > 0 && buttonState == 0)
   {
-    println("key pressed!");
+    //println("key pressed!");
     oscP5.send(myMessage1, myRemoteLocation); 
 
   }
@@ -72,7 +70,6 @@ void draw() {
   //print(arduino.analogRead(2));
   //print('\t');
   //println(1023-arduino.analogRead(3));
-  //print(arduino.digitalRead(2));
 }
 
 
