@@ -33,10 +33,10 @@ public class HueChange : MonoBehaviour {
 		}
 		for (int b = 0; b < backgrounds.Length; b++) {	
 			if (i < colors.Length-1) {
-				backgrounds [b].GetComponent<SpriteRenderer> ().color = Color.LerpUnclamped (colors[i], colors [i+1], nextFlash / flashRate);
+				backgrounds [b].GetComponentInChildren<SpriteRenderer>().color = Color.LerpUnclamped (colors[i], colors [i+1], nextFlash / flashRate);
 
 			}else{
-				backgrounds [b].GetComponent<SpriteRenderer> ().color = Color.LerpUnclamped (colors[i], colors [0], nextFlash / flashRate);
+				backgrounds [b].GetComponentInChildren<SpriteRenderer>().color = Color.LerpUnclamped (colors[i], colors [0], nextFlash / flashRate);
 
 
 			}
