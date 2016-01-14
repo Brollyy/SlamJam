@@ -11,7 +11,9 @@ Arduino arduino;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-int key = 0;
+int buttonPin = 5;
+int buttonState = 0;
+int lastButtonState = 1;
 
 
 
@@ -33,11 +35,14 @@ void setup() {
   myRemoteLocation = new NetAddress("127.0.0.1", 12000);
   for (int i = 0; i <= 13; i++)
     arduino.pinMode(i, Arduino.INPUT);
-    int key = arduino.digitalRead(8);
 }
 
 
 void draw() {
+  lastButtonState = buttonState;
+  buttonState = arduino.analogRead(buttonPin);
+  
+
   background(0);
 
   /* in the following different ways of creating osc messages are shown by example */
@@ -49,13 +54,14 @@ void draw() {
   myMessage.add(1023-arduino.analogRead(1)); /* add an int to the osc message */
   myMessage.add(arduino.analogRead(2)); /* add an int to the osc message */
   myMessage.add(1023-arduino.analogRead(3)); /* add an int to the osc message */
-  
-  if (key == 1)
-  {
-    myMessage.add(arduino.digitalRead(8));
-    print("key pressed!");
-  }
+  myMessage1.add(1);
 
+  if (lastButtonState > 0 && buttonState == 0)
+  {
+    println("key pressed!");
+    oscP5.send(myMessage1, myRemoteLocation); 
+
+  }
 
 
   /* send the message */
@@ -66,7 +72,7 @@ void draw() {
   //print(arduino.analogRead(2));
   //print('\t');
   //println(1023-arduino.analogRead(3));
-  print(arduino.digitalRead(2));
+  //print(arduino.digitalRead(2));
 }
 
 
