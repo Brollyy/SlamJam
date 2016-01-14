@@ -12,6 +12,7 @@ public class TimerBonus : MonoBehaviour {
 	private float time;
 	public float animationTime = 0.1F;
 	private Vector2 start, end;
+	private Vector2 startScale = new Vector2(1.0F, 1.0F);
 
 	// Use this for initialization
 	void Start () {
@@ -25,7 +26,7 @@ public class TimerBonus : MonoBehaviour {
 		if (active) {
 			time += Time.fixedDeltaTime;
 			(text as RectTransform).position = Vector2.Lerp(start, end, time/animationTime);
-			(text as RectTransform).localScale = Vector2.Lerp (new Vector2 (1.0F, 1.0F), Vector2.zero, time / animationTime);
+			(text as RectTransform).localScale = Vector2.Lerp (startScale, Vector2.zero, time / animationTime);
 			if (time >= animationTime) {
 				active = false;
 				if (text) Destroy (text.gameObject);
@@ -54,6 +55,10 @@ public class TimerBonus : MonoBehaviour {
 			rect.pivot = pivot;
 			rect.anchorMax = anchorMax;
 			rect.anchorMin = anchorMin;
+
+			int streak = GameObject.FindGameObjectWithTag ("Player").GetComponent<Streak> ().GetStreak ();
+			int streakMax = GameObject.FindGameObjectWithTag ("Player").GetComponent<Streak> ().streakMax;
+			startScale.Set (1 + 3*((streak - 1.0F) / streakMax), 1 + 3*((streak - 1.0F) / streakMax));
 		}
 	}
 }
