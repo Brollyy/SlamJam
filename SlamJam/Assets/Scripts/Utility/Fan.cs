@@ -24,7 +24,8 @@ public class Fan : MonoBehaviour {
 	void OnTriggerStay2D(Collider2D col) {
 		if (col.gameObject.name == "Player" && !col.gameObject.GetComponent<Rigidbody2D>().isKinematic) {
 			float dist = transform.InverseTransformDirection (col.transform.position - transform.position).y;
-			Vector3 force = transform.InverseTransformDirection (transform.up).normalized;
+			Vector3 force = transform.up.normalized;
+			print (force);
 			force *= (transform.lossyScale.y - dist) * forceMultiplier;
 			print (force);
 			col.gameObject.GetComponent<Rigidbody2D> ().AddForce (force);
