@@ -59,6 +59,7 @@ public class Collectible : MonoBehaviour {
 			int streak = player.GetComponent<Streak> ().GetStreak ();
 			player.GetComponent<Streak> ().UpStreak ();
 			source.clip = soundEffects [Mathf.Clamp(streak, 0, soundEffects.Length-1)];
+            source.volume = 0.35F;
 			source.Play ();
 			GameObject.FindGameObjectWithTag ("Timer").GetComponent<Timer> ().ChangeTimer (-bonusTime * Mathf.Clamp(streak, 1, soundEffects.Length));
 			gameObject.GetComponent<TimerBonus> ().Activate (-bonusTime * Mathf.Clamp (streak+1, 1, soundEffects.Length));

@@ -49,6 +49,7 @@ public class ReachGoal : MonoBehaviour {
 				}
 			}
 			if (source) {
+                source.volume = 0.5F;
 				source.Play ();
 			}
 		}

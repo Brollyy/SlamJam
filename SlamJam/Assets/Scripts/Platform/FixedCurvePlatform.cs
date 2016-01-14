@@ -83,7 +83,7 @@ public class FixedCurvePlatform : MonoBehaviour {
 				//bumpSource.clip = bumpSounds[Random.Range (0, bumpSounds.Length)];
 				//bumpSource.Play (volume);
 
-				bumpSource.PlayOneShot(bumpSounds[Random.Range (0, bumpSounds.Length)], 0.35F);
+				bumpSource.PlayOneShot(bumpSounds[Random.Range (0, bumpSounds.Length)], 0.5F);
 			}
 		}
 	}
