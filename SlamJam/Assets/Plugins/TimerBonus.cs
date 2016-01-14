@@ -12,6 +12,7 @@ public class TimerBonus : MonoBehaviour {
 	private float time;
 	public float animationTime = 0.1F;
 	private Vector2 start, end;
+	private Vector2 startScale = new Vector2(1.0F, 1.0F);
 
 	// Use this for initialization
 	void Start () {
@@ -24,7 +25,8 @@ public class TimerBonus : MonoBehaviour {
 	void FixedUpdate () {
 		if (active) {
 			time += Time.fixedDeltaTime;
-			(text as RectTransform).anchoredPosition = Vector2.Lerp(start, end, time/animationTime);
+			(text as RectTransform).position = Vector2.Lerp(start, end, time/animationTime);
+			(text as RectTransform).localScale = Vector2.Lerp (startScale, Vector2.zero, time / animationTime);
 			if (time >= animationTime) {
 				active = false;
 				if (text) Destroy (text.gameObject);
@@ -41,8 +43,22 @@ public class TimerBonus : MonoBehaviour {
 				text.SetParent(canvas.transform, false);
 			}
 			text.GetComponent<Text> ().text = string.Format("{0:F}", bonus);
-			start = (text as RectTransform).anchoredPosition;
-			end = new Vector3 (start.x, start.y - 10);
+			start = (text as RectTransform).position;
+			RectTransform rect = (text as RectTransform);
+			Vector2 pivot = rect.pivot;
+			rect.pivot = new Vector2 (1.0F, 1.0F);
+			Vector2 anchorMax = rect.anchorMax;
+			rect.anchorMax = new Vector2 (1.0F, 1.0F);
+			Vector2 anchorMin = rect.anchorMin;
+			rect.anchorMin = new Vector2 (1.0F, 1.0F);
+			end = rect.position;
+			rect.pivot = pivot;
+			rect.anchorMax = anchorMax;
+			rect.anchorMin = anchorMin;
+
+			int streak = GameObject.FindGameObjectWithTag ("Player").GetComponent<Streak> ().GetStreak ();
+			int streakMax = GameObject.FindGameObjectWithTag ("Player").GetComponent<Streak> ().streakMax;
+			startScale.Set (1 + 3*((streak - 1.0F) / streakMax), 1 + 3*((streak - 1.0F) / streakMax));
 		}
 	}
 }
