@@ -48,9 +48,9 @@ public class TimerBonus : MonoBehaviour {
 			Vector2 pivot = rect.pivot;
 			rect.pivot = new Vector2 (1.0F, 1.0F);
 			Vector2 anchorMax = rect.anchorMax;
-			rect.anchorMax = new Vector2 (1.0F, 1.0F);
+			rect.anchorMax = new Vector2 (0.99F, 0.99F);
 			Vector2 anchorMin = rect.anchorMin;
-			rect.anchorMin = new Vector2 (1.0F, 1.0F);
+			rect.anchorMin = new Vector2 (0.99F, 0.99F);
 			end = rect.position;
 			rect.pivot = pivot;
 			rect.anchorMax = anchorMax;
