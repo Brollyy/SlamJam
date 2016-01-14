@@ -8,11 +8,10 @@ public class HueChange : MonoBehaviour {
 	int i = 0;
 	public float delay = 0.0F;
 	public Color[] colors;
-	private bool rave = true;
+    public bool rave = true;
 	
 	// Use this for initialization
 	void Start () {
-		rave = true;
 		for (int b = 0; b < backgrounds.Length; b++) {
 			backgrounds [b].GetComponentInChildren<SpriteRenderer> ().color = Color.LerpUnclamped (colors [i], Color.white, nextFlash / flashRate);
 		}
