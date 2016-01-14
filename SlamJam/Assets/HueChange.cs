@@ -17,12 +17,14 @@ public class HueChange : MonoBehaviour {
 		}
 		
 	}
-	
-	// Update is called once per frame
-	void FixedUpdate () {
-		if (Input.GetKeyDown ("1")) {
+	void Update(){
+		if (Input.GetKeyDown (KeyCode.Alpha1)) {
 			rave = !rave;
 		}
+	}
+	// Update is called once per frame
+	void FixedUpdate () {
+
 
 			if (Time.fixedTime < delay)
 				return;
